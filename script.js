@@ -21,11 +21,13 @@ function CreateAnchors()
         {
             break;
         }
-        var matchEnd = match.index + match.toString().length;
+        var matchEnd = match.index + match[0].length;
+        var topLink = '<a href="#top">(top)</a>';
+        var replacement = topLink + ' <a name="page' + match[1] + '" href="#">(Page ' + match[1] + ')' + '</a>';
         
-        content = content.substr(0, match.index) +
-            '<a name="page' + match[1] + '" href="#">(Page ' + match[1] + ')' + '</a>' +
-            content.substr(matchEnd - 1, content.length - matchEnd);
+        content = content.substr(0, match.index - '(top)'.length) +
+            replacement +
+            content.substr(matchEnd, content.length - matchEnd);
     }
     SetContent(content);
 }
@@ -66,5 +68,25 @@ function HackToC()
     SetContent(content);
 }
 
+function HackToCTop()
+{
+    var content = GetContent();
+    var rexp = /Table of Contents/g;
+    var match = rexp.exec(content);
+    if (match)
+    {
+        console.log("hi!");
+        var matchEnd = match.index + match[0].length;
+        var replacement = '<a name="top" href="#">' + match[0] + '</a>';
+        
+        content = content.substr(0, match.index) +
+            replacement +
+            content.substr(matchEnd, content.length - matchEnd);
+        
+        SetContent(content);
+    }
+}
+
 CreateAnchors();
 HackToC();
+HackToCTop();
